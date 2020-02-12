@@ -15,9 +15,9 @@ const server = http.createServer(app)
 const io = new Socket(server)
 
 MongooseConnection()
-app.use(cors())
+io.connection()
 app.use(express.json())
 app.use(router)
-io.connection()
+app.use(cors())
 
 server.listen(PORT, () => console.log(`Listening to port ${PORT}`))
