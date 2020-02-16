@@ -15,12 +15,17 @@ class UserController {
   }
 
   async store(body, room) {
-    this.userRoom = new Room({ name: room });
-    this.user = new User({ ...body });
-    this.userRoom.users.push(this.user);
-    await this.userRoom.save();
+    let userRoom = await Room.findOne({ name: room });
 
-    this.user.room = this.userRoom;
+    if (!userRoom) {
+      userRoom = new Room({ name: room });
+    }
+
+    this.user = new User({ ...body });
+    userRoom.users.push(this.user);
+    await userRoom.save();
+
+    this.user.room = userRoom;
     await this.user.save();
 
     this.user.populate('room');

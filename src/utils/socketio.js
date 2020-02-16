@@ -58,6 +58,12 @@ class Socket {
   async sendMessage(socket, message) {
     const user = await UserController.show(socket.id);
 
+    await MessageController.store({
+      text: message,
+      user,
+      room: user.room,
+    }, user);
+
     this.io.to(user.room.name).emit('message', {
       user: user.name, text: message,
     });
