@@ -1,42 +1,43 @@
-const User = require('../models/User')
-const Room = require('../models/Room')
+const User = require('../models/User');
+const Room = require('../models/Room');
 
 class UserController {
-    async index(field = null) {
-        const users = await User.find({ ...field })
-                                .populate('room')
-        return users
-    }
+  async index(field = null) {
+    this.users = await User.find({ ...field })
+      .populate('room');
+    return this.users;
+  }
 
-    async show(id) {
-        const user = await User.findById(id)
-                                .populate('room')
-        return user
-    }
+  async show(id) {
+    this.user = await User.findById(id)
+      .populate('room');
+    return this.user;
+  }
 
-    async store(body, room) {
-        const userRoom = new Room({ name: room })
-        const user = new User({ ...body })
-        userRoom.users.push(user)
-        await userRoom.save()
-        user.room = userRoom
-        await user.save()
+  async store(body, room) {
+    this.userRoom = new Room({ name: room });
+    this.user = new User({ ...body });
+    this.userRoom.users.push(this.user);
+    await this.userRoom.save();
 
-        user.populate('room')
-        return user
-    }
+    this.user.room = this.userRoom;
+    await this.user.save();
 
-    async update(id, body) {
-        const user = await User.findByIdAndUpdate(id, { ...body })
-                                .populate('room')
-        return user
-    }
+    this.user.populate('room');
+    return this.user;
+  }
 
-    async delete(id) {
-        const user = await User.findByIdAndDelete(id)
-                                .populate('room')
-        return user
-    }
+  async update(id, body) {
+    this.user = await User.findByIdAndUpdate(id, { ...body })
+      .populate('room');
+    return this.user;
+  }
+
+  async delete(id) {
+    this.user = await User.findByIdAndDelete(id)
+      .populate('room');
+    return this.user;
+  }
 }
 
-module.exports = new UserController()
+module.exports = new UserController();
